@@ -1,0 +1,5 @@
+*.o
+*nc
+*dat
+_build
+*mod
