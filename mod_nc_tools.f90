@@ -427,8 +427,7 @@ module mod_nc_tools
         k = 1
 
 
-        !do i = 1, number_of_nc !LOOP TO READ OVER EACH NC
-        do i = 1,1 !LOOP TO READ OVER EACH NC
+        do i = 1, number_of_nc !LOOP TO READ OVER EACH NC
             READ(11,*) era5_nc
             era5_nc = "data/"//trim(era5_nc)
             print *, "merging ... ", era5_nc
