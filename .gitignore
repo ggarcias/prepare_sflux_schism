@@ -1,5 +1,5 @@
 *.o
-*nc
-*dat
+*.nc
+*.dat
 _build
-*mod
+*.mod
