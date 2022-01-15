@@ -496,6 +496,7 @@ module mod_nc_sflux
             deallocate(v10)
             deallocate(msl)
             deallocate(siconc)
+            deallocate(time)
 
         end do
 
