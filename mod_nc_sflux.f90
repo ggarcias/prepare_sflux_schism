@@ -431,7 +431,7 @@ module mod_nc_sflux
         integer :: ilon, ilat, itime, timescale
 
         real(kind = dp) :: ttime, deltatime
-        real(kind = dp):: diff_julian_time, timescale_f
+        real(kind = dp):: diff_julian_time, time_to_save
 
 
         open(UNIT=11, FILE="out.dat", ACTION="READ", IOSTAT=interror, STATUS="UnkNOWN")
@@ -476,8 +476,8 @@ module mod_nc_sflux
             call get_time_era5(era5_nc)
 
             do j = 1, itime
-                call check(nf90_put_var(ncid, ID_time, &
-                    (time(j) * timescale + diff_julian_time)/24.0/3600.0 , &
+                time_to_save = (time(j) * timescale + diff_julian_time)/24.0/3600.0
+                call check(nf90_put_var(ncid, ID_time, time_to_save, &
                     start = [k]), "writing time") 
                 call check(nf90_put_var(ncid, ID_u10, real(u10(:,:,j), 4), &
                     start = [1, 1, k]), "writing u10") 

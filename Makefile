@@ -53,7 +53,7 @@ all: runfile
 OBJDIR := _build
 
 objects := $(addprefix $(OBJDIR)/,mod_precision.o mod_const.o mod_datetime.o \
-	mod_nc_tools.o PREPARE_SFLUX.o)
+	mod_nc_tools.o mod_strings.o mod_nc_sflux.o PREPARE_SFLUX.o)
 
 $(OBJDIR)/%.o : %.f90
 		$(FC) $(FF) -c $(ORM_FLAGS) $(PROJECT_FLAG) $(CASE_FLAG) $(INC_DIR) $(LIB_DIR) $< -o $@

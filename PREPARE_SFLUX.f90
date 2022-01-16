@@ -2,7 +2,7 @@ program PREPARE_SFLUX
     use mod_const
     use mod_precision
     use mod_datetime
-    use mod_nc_tools
+    use mod_nc_sflux
     use netcdf
     implicit none
 
