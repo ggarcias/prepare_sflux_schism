@@ -301,33 +301,39 @@ module mod_nc_sflux
 
         integer :: ilon, ilat, itime
         integer :: ncid, varid
+        real(kind = dp), allocatable, dimension(:,:,:) :: u10_aux, v10_aux, &
+            u10_auxx, v10_auxx
 
         call get_dimensions_era5(ncname, ilon, ilat, itime)
 
         !allocate longitude, latitude, u and v
         allocate(u10(ilon, ilat, itime))
         allocate(v10(ilon, ilat, itime))
+        allocate(u10_aux(ilon, ilat, itime))
+        allocate(v10_aux(ilon, ilat, itime))
+        allocate(u10_auxx(ilon, ilat, itime))
+        allocate(v10_auxx(ilon, ilat, itime))
 
         call check(nf90_open(ncname, NF90_NOWRITE, ncid), &
             "open era5 netcdf file")
 
         ! Reading u10, v10
         call check(nf90_inq_varid(ncid, "u10", varid), "varid u10")
-        call check(nf90_get_var(ncid, varid, u10), "getting u10")
+        call check(nf90_get_var(ncid, varid, u10_aux), "getting u10")
         call check(nf90_get_att(ncid, varid, "scale_factor", scale_factor),&
             "scale factor")
         call check(nf90_get_att(ncid, varid, "add_offset", add_offset),&
             "add_offset")
         call check(nf90_get_att(ncid, varid, "_FillValue", fillvalue),&
             "Fill Value")
-        where (u10 .ne. fillvalue)  u10 = (u10 * scale_factor) + add_offset
-        u10 = u10(:, ilat:1:-1, :)
+        where (u10_aux .ne. fillvalue)  u10_aux = (u10_aux * scale_factor) + add_offset
+        u10_auxx = u10_aux(:, ilat:1:-1, :)
         ! shift values (because lon was shifted)
-        u10 = CSHIFT(u10, int(ilon/2.0), 1)
+        u10 = CSHIFT(u10_auxx, int(ilon/2.0), 1)
 
 
         call check(nf90_inq_varid(ncid, "v10", varid), "varid v10")
-        call check(nf90_get_var(ncid, varid, v10), "gettign v10")
+        call check(nf90_get_var(ncid, varid, v10_aux), "gettign v10")
         call check(nf90_get_att(ncid, varid, "scale_factor", scale_factor),&
             "scale factor")
         call check(nf90_get_att(ncid, varid, "add_offset", add_offset),&
@@ -336,10 +342,10 @@ module mod_nc_sflux
             "Fill Value")
         call check(nf90_close(ncid), "closing nc")
 
-        where (v10 .ne. fillvalue)  v10 = (v10 * scale_factor) + add_offset
-        v10 = v10(:, ilat:1:-1, :)
+        where (v10_aux .ne. fillvalue)  v10_aux = (v10_aux * scale_factor) + add_offset
+        v10_auxx = v10_aux(:, ilat:1:-1, :)
         ! shift values (because lon was shifted)
-        v10 = CSHIFT(v10, int(ilon/2.0), 1)
+        v10 = CSHIFT(v10_auxx, int(ilon/2.0), 1)
 
     end subroutine
     
@@ -351,18 +357,21 @@ module mod_nc_sflux
 
         integer :: ilon, ilat, itime
         integer :: ncid, varid
+        real(kind = dp), allocatable, dimension(:,:,:) :: msl_aux, msl_auxx
 
         call get_dimensions_era5(ncname, ilon, ilat, itime)
 
         !allocate longitude, latitude, u and v
         allocate(msl(ilon, ilat, itime))
+        allocate(msl_aux(ilon, ilat, itime))
+        allocate(msl_auxx(ilon, ilat, itime))
 
         call check(nf90_open(ncname, NF90_NOWRITE, ncid), &
             "open era5 netcdf file")
 
         ! Reading msl
         call check(nf90_inq_varid(ncid, "msl", varid), "varid msl")
-        call check(nf90_get_var(ncid, varid, msl), "getting msl")
+        call check(nf90_get_var(ncid, varid, msl_aux), "getting msl")
         call check(nf90_get_att(ncid, varid, "scale_factor", scale_factor),&
             "scale factor")
         call check(nf90_get_att(ncid, varid, "add_offset", add_offset),&
@@ -371,10 +380,10 @@ module mod_nc_sflux
             "Fill Value")
         call check(nf90_close(ncid), "closing nc")
 
-        where (msl .ne. fillvalue)  msl = (msl * scale_factor) + add_offset
-        msl = msl(:, ilat:1:-1, :)
+        where (msl_aux .ne. fillvalue)  msl_aux = (msl_aux * scale_factor) + add_offset
+        msl_auxx = msl_aux(:, ilat:1:-1, :)
         ! shift values (because lon was shifted)
-        msl = CSHIFT(msl, int(ilon/2.0), 1)
+        msl = CSHIFT(msl_auxx, int(ilon/2.0), 1)
 
     end subroutine
 
@@ -386,18 +395,21 @@ module mod_nc_sflux
 
         integer :: ilon, ilat, itime
         integer :: ncid, varid
+        real(kind = dp), allocatable, dimension(:,:,:) :: siconc_aux, siconc_auxx
 
         call get_dimensions_era5(ncname, ilon, ilat, itime)
 
         !allocate longitude, latitude, u and v
         allocate(siconc(ilon, ilat, itime))
+        allocate(siconc_aux(ilon, ilat, itime))
+        allocate(siconc_auxx(ilon, ilat, itime))
 
         call check(nf90_open(ncname, NF90_NOWRITE, ncid), &
             "open era5 netcdf file")
 
         ! Reading siconc
         call check(nf90_inq_varid(ncid, "siconc", varid), "varid siconc")
-        call check(nf90_get_var(ncid, varid, siconc), "getting siconc")
+        call check(nf90_get_var(ncid, varid, siconc_aux), "getting siconc")
         call check(nf90_get_att(ncid, varid, "scale_factor", scale_factor),&
             "scale factor")
         call check(nf90_get_att(ncid, varid, "add_offset", add_offset),&
@@ -406,10 +418,10 @@ module mod_nc_sflux
             "Fill Value")
         call check(nf90_close(ncid), "closing nc")
 
-        where (siconc .ne. fillvalue)  siconc = (siconc * scale_factor) + add_offset
-        siconc = siconc(:, ilat:1:-1, :) 
+        where (siconc_aux .ne. fillvalue)  siconc_aux = (siconc_aux * scale_factor) + add_offset
+        siconc_auxx = siconc_aux(:, ilat:1:-1, :) 
         ! shift values (because lon was shifted)
-        siconc = CSHIFT(siconc, int(ilon/2.0), 1)
+        siconc = CSHIFT(siconc_auxx, int(ilon/2.0), 1)
 
 !        siconc = siconc * merge(0, 1, siconc == fillvalue)
 !        do i = 1, size(siconc, 3)
@@ -471,8 +483,11 @@ module mod_nc_sflux
             call check(nf90_open(sflux_name, NF90_WRITE, ncid), "open sflux file")
             call get_dimensions_era5(era5_nc, ilon, ilat, itime)
             call get_u10_v10_era5_nc(era5_nc)
+            print *, "ok"
             call get_msl_era5_nc(era5_nc)
+            print *, "ok"
             call get_siconc_era5_nc(era5_nc)
+            print *, "ok"
             call get_time_era5(era5_nc)
 
             do j = 1, itime
