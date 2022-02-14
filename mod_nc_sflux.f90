@@ -486,11 +486,8 @@ module mod_nc_sflux
             call check(nf90_open(sflux_name, NF90_WRITE, ncid), "open sflux file")
             call get_dimensions_era5(era5_nc, ilon, ilat, itime)
             call get_u10_v10_era5_nc(era5_nc)
-            print *, "ok"
             call get_msl_era5_nc(era5_nc)
-            print *, "ok"
             call get_siconc_era5_nc(era5_nc)
-            print *, "ok"
             call get_time_era5(era5_nc)
 
             do j = 1, itime
