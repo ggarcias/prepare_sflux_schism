@@ -207,12 +207,15 @@ module mod_nc_sflux
 
         integer :: ilon, ilat, itime
         integer :: ncid, varid
+        real(kind = dp), allocatable, dimension(:) :: longitude_aux, latitude_aux
 
         call get_dimensions_era5(ncname, ilon, ilat, itime)
 
         !allocate longitude, latitude, u and v
         allocate(longitude(ilon))
         allocate(latitude(ilat))
+        allocate(longitude_aux(ilon))
+        allocate(latitude_aux(ilat))
 
         allocate(lonn(ilon, ilat))
         allocate(latt(ilon, ilat))
@@ -222,15 +225,15 @@ module mod_nc_sflux
 
         ! Reading latitude, longitude
         call check(nf90_inq_varid(ncid, "longitude", varid), "id longitude var")
-        call check(nf90_get_var(ncid, varid, longitude), "getting longitude")
+        call check(nf90_get_var(ncid, varid, longitude_aux), "getting longitude")
         call check(nf90_inq_varid(ncid, "latitude", varid), "id latitude var")
-        call check(nf90_get_var(ncid, varid, latitude), "getting latitude")
+        call check(nf90_get_var(ncid, varid, latitude_aux), "getting latitude")
 
-        longitude = longitude - 180.0
-        latitude = -1.0 * latitude
+        longitude = longitude_aux - 180.0
+        latitude = -1.0 * latitude_aux
 
-        lonn = SPREAD(longitude, 2, ilat)
-        latt = SPREAD(latitude, 1, ilon)
+        lonn(:,:) = SPREAD(longitude, 2, ilat)
+        latt(:,:) = SPREAD(latitude, 1, ilon)
 
         call check(nf90_close(ncid), "closing nc")
     end subroutine
