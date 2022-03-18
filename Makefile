@@ -4,8 +4,8 @@
 
 # Project and case definition
 RUNFILE 	      = run_prepare_sflux
-ARCH              =
-NETCDFLIBS        = automatic
+ARCH              = intel-fortran
+NETCDFLIBS        = hpc-icmat
 #================================================================
 
 #================================================================
@@ -26,6 +26,12 @@ else ifeq ($(NETCDFLIBS),automatic-44)
 LIB_DIR = $(shell nf-config --flibs)
 INC_DIR = $(shell nf-config --cflags)
 
+else ifeq ($(NETCDFLIBS),hpc-icmat)
+LIB_DIR = -L/LUSTRE/apps/netcdf/intel/fortran/4.4.5/lib -lnetcdff
+#LIB_DIR = -L/LUSTRE/apps/netcdf/gfortran/8.1.0/4.5.2/lib -lnetcdff -L/LUSTRE/apps/netcdf/gcc/c/4.7.0/lib -lnetcdf -lnetcdf -ldl
+INC_DIR = -I/LUSTRE/apps/netcdf/intel/fortran/4.4.5/include 
+#INC_DIR = -I/LUSTRE/apps/netcdf/gfortran/8.1.0/4.5.2/include
+
 else
 NCDF_ROOT = /BGFS/DISASTER/garcgui/build/netcdf-c-4.6.1
 
@@ -35,13 +41,13 @@ INC_DIR	= -I$(NCDF_ROOT)/include
 endif
 
 # Fortran compiler and flags
-ifeq ($(ARCH),tetralith)
-FC = ifort
-FF = -g -O3 -traceback -pg
+ifeq ($(ARCH),intel-fortran)
+FC = /LUSTRE/apps/Intel/2019/compilers_and_libraries_2019.1.144/linux/bin/intel64/ifort
+FF = -g -Ofast -traceback -warn all
 
 else
 FC = gfortran
-FF = -g -Ofast -fbacktrace -Wall -Wno-maybe-uninitialized -Wno-unused-dummy-argument
+FF = -g -O0 -fbacktrace -Wall -Wno-maybe-uninitialized -Wno-unused-dummy-argument
 
 endif
 
@@ -76,7 +82,6 @@ test :
 .PHONY : clean
 
 clean:
-
 	-rm -f *.mod *.o $(RUNFILE)
 	-rm -rf *.o *.mod *.out *.dSYM *.csv fort.* *.x *.in
 	-rm -rf _build
